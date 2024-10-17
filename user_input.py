@@ -28,7 +28,7 @@ async def gather(request: Request):
     
     if user_input == "1":
         response.say("Please ask your question after the beep.")
-        response.record(action='/record', max_length=10, transcribe=True, transcribe_callback="")
+        response.record(action='/record', max_length=10, transcribe=True, transcribe_callback="/transcription")
     elif user_input == "2":
         response.say("Goodbye!")
         response.hangup()
@@ -37,3 +37,11 @@ async def gather(request: Request):
         response.redirect('/voice')
 
     return HTMLResponse(content=str(response), status_code=200)
+
+# Endpoint to receive transcriptions
+@app.post("/transcription")
+async def transcription(request: Request):
+    form_data = await request.form()
+    transcription_text = form_data.get("TranscriptionText")
+    print("Transcription:", transcription_text)
+    return {"status": "success"}
